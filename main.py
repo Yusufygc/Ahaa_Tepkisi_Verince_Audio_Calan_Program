@@ -11,9 +11,21 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 
+import os
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class AhaaBot:
     def __init__(self, music_path, trigger_word="aha"):
-        self.music_path = music_path
+        self.music_path = resource_path(music_path)
         self.trigger_word = trigger_word
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
@@ -81,4 +93,4 @@ if __name__ == "__main__":
     TRIGGER = "aha"             # Tetikleyici kelime
     
     bot = AhaaBot(music_path=MUSIC_FILE, trigger_word=TRIGGER)
-    bot.listen_and_process()
+    bot.listen_and_process()
